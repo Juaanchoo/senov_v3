@@ -29,6 +29,13 @@ class NovedadesModel extends DataBase
 
     public function actualizarEstadoModel($data){
         $sql = "UPDATE novedades SET fk_id_estado = ? WHERE id_novedad = ?";
+        $this->db->query($sql);
+        $this->db->bind(1, $data["estado"]);
+        $this->db->bind(2, $data["id"]);
+        if($this->db->execute()){
+            return "cy";
+
+        }
     }
     
 

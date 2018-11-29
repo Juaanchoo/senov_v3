@@ -16,10 +16,12 @@ class NovedadesController extends controller
     }
 
     public function actualizarEstado($id,$estado){
-        $this->novedadModel->actualizarEstadoModel([
+        $response = $this->novedadModel->actualizarEstadoModel([
             'id' => $id,
             'estado' => $estado
         ]);
+
+        echo json_encode (["estado" => $response]);
     }
 }
 

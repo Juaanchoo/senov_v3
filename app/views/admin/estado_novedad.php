@@ -60,8 +60,8 @@
 					<li class="page-item disabled">
 						<span class="page-link">Previous</span>
 					</li>
-					<li class="page-item"><a class="page-link" href="#">1</a></li>
-					<li class="page-item active">
+					<li class="page-item active"><a class="page-link" href="#">1</a></li>
+					<li class="page-item">
 						<span class="page-link">
 							2
 							<span class="sr-only">(current)</span>
@@ -173,6 +173,10 @@
       </div>
       <div class="modal-body">
 	  	<div class="p-3">
+		  <div class="custom-control custom-radio custom-control-inline">
+				<input value="1" v-if="novedades.estado == 'En tramite'" v-model="estado.status" type="radio" id="customRadioInline1" name="customRadioInline1" class="custom-control-input">
+				<label class="custom-control-label" for="customRadioInline1">En tramite</label>
+			</div>
 		  	<div class="custom-control custom-radio custom-control-inline">
 				<input value="2" v-model="estado.status" type="radio" id="customRadioInline1" name="customRadioInline1" class="custom-control-input">
 				<label class="custom-control-label" for="customRadioInline1">Aprobado</label>
@@ -184,7 +188,7 @@
 		</div>
 		<div>
 			<p class="text-muted p-2">
-				<b>Nota:</b> porfavo verifique toda la informacion de la novedad antes de cambiar su estado.
+				<b>Nota:</b> Por favor! Verifique toda la información de la novedad antes de cambiar su estado.
 			</p>
 		</div>
       </div>
@@ -271,9 +275,9 @@ var app = new Vue({
 			var url = '/senov_v3/novedades/actualizarEstado/' + me.estado.id + '/'+me.estado.status;
 			axios.get(url)
 			.then(function (response) {
-				console.log(response);
-				
-				
+				var res =response.data;
+				console.log(res.estado);
+				location.href = ("/senov_v3/panel/estado_novedad");
 			})
 			.catch(function (error) {
 				console.error(error);
