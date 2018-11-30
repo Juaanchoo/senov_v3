@@ -33,7 +33,7 @@ class NovedadesModel extends DataBase
         $this->db->bind(1, $data["estado"]);
         $this->db->bind(2, $data["id"]);
         if($this->db->execute()){
-            return "cy";
+            return "Cambio éxitoso";
 
         }
     }

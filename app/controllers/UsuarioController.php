@@ -19,7 +19,35 @@ class UsuarioController extends controller
         echo json_encode(['usuarios' => $usuarios]);
     }
 
-    public function habilitarUsuario(){
+    public function getHabilitados(){
+        if (!$this->isGet()) { header('location: '.URL_APP.'/'); }
+        $habilitados = $this->model->get_Habilitados();
+
+        echo json_encode(['habilitados' => $habilitados]);
+    }
+
+    // public function getNoRegistrados(){
+    //     if (!$this->isGet()) { header('location: '.URL_APP.'/'); }
+    //     $usuarios = $this->model->all();
+    //     $habilitados = $this->model->get_Habilitados();
+
+    //     foreach ($usuarios as $us) {
+    //         $docsus [] = $us->documento;
+    //     }
+    //     foreach ($habilitados as $ha) {
+    //         $docsha [] = $ha->documento;
+    //     }
+
+    //     for ($i=0; $i < sizeof($habilitados) ; $i++) { 
+    //         if($docsus != $docsha)
+    //         {
+    //             $noregistro = $docsha;
+    //             echo json_encode(['noregistro' => $noregistro);
+    //         }
+    //     }
+    // }
+
+    public function habilitarUsuarios(){
         if (!$this->isPost()) { header('location: '.URL_APP.'/'); }
 
         try{
@@ -50,18 +78,32 @@ class UsuarioController extends controller
         } 
 
 
-    } 
+    }
+    
+    public function habilitarUsuario()
+    {
+        if (!$this->isPut()) { header('location: '.URL_APP.'/'); }
+        $data = $this->getJson();
+        $this->model->habilitar_Usuario($data->id);
+    }
+
+    public function deshabilitarUsuario()
+    {
+        if (!$this->isPut()) { header('location: '.URL_APP.'/'); }
+        $data = $this->getJson();
+        $this->model->deshabilitar_Usuario($data->id);
+    }
 
     public function desactivar(){
         if (!$this->isPut()) { header('location: '.URL_APP.'/'); }  
         $data = $this->getJson();
-        $this->model->desactivarUsuario($data->id);
+        $this->model->desactivar_Usuario($data->id);
     }
 
     public function activar(){
         if (!$this->isPut()) { header('location: '.URL_APP.'/'); }  
         $data = $this->getJson();
-        $this->model->activarUsuario($data->id);
+        $this->model->activar_Usuario($data->id);
     }
 
 }

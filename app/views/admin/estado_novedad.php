@@ -45,7 +45,7 @@
 										<div class="dropdown-menu" x-placement="right-start" style="position: absolute; transform: translate3d(112px, 0px, 0px); top: 0px; left: 0px; will-change: transform;">
 											<a @click="verNovedad(item)" data-toggle="modal" data-target="#exampleModal" class="dropdown-item" href="#">Ver toda la novedad</a>
 											<div class="dropdown-divider"></div>
-											<a @click="verActualizarEstado(item.id_novedad)" data-toggle="modal" data-target="#modalActualizarNov" class="dropdown-item" href="#">Actualizar Estado</a>
+											<a @click="verActualizarEstado(item)" data-toggle="modal" data-target="#modalActualizarNov" class="dropdown-item" href="#">Actualizar Estado</a>
 										</div>
 									</div>
  
@@ -174,7 +174,7 @@
       <div class="modal-body">
 	  	<div class="p-3">
 		  <div class="custom-control custom-radio custom-control-inline">
-				<input value="1" v-if="novedades.estado == 'En tramite'" v-model="estado.status" type="radio" id="customRadioInline1" name="customRadioInline1" class="custom-control-input">
+				<input value="1" v-model="estado.status" type="radio" id="customRadioInline1" name="customRadioInline1" class="custom-control-input">
 				<label class="custom-control-label" for="customRadioInline1">En tramite</label>
 			</div>
 		  	<div class="custom-control custom-radio custom-control-inline">
@@ -265,10 +265,18 @@ var app = new Vue({
 			me.novedades.fecha_final 	= data.fecha_final;
 			me.novedades.estado			= data.estado;			
 		},
-		verActualizarEstado(id){
+		verActualizarEstado(data){
 			let me = this;
-			me.estado.id = id;
-			me.estado.status = 0;
+			me.estado.id = data.id_novedad;
+			if(data.estado == "En tramite"){
+				me.estado.status = 1;
+			}
+			if(data.estado == "Aprobado"){
+				me.estado.status = 2;
+			}
+			if(data.estado == "No Aprobado"){
+				me.estado.status = 3;
+			}
 		},
 		actualizarEstado(){
 			let me = this;

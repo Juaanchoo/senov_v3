@@ -80,25 +80,25 @@
                                     <th>Opciones</th>
                                     <th>Tipo Documento</th>
                                     <th>Documento</th>
-                                    <th>Fecha de Ingreso</th>
                                     <th>Estado</th>
                                 </tr>
                             </thead>
                             <tbody class="">
 
-                                <tr v-for="item in arrayUsuarios" :key="item.id">
-                                    <td>
-                                        <button v-if="item.estado == 1" @click="desactivarUsuario(item.documento)" title="Desactivar" class="btn btn-sm btn-danger">
-                                            <i class="fas fa-times-circle"></i>
+                                <tr v-for="item in arrayHabilitados" :key="item.id">
+                                    <td align="center">
+                                        <span v-if="item.estado == 1">Deshabilitar</span>
+                                        <button v-if="item.estado == 1" @click="deshabilitarUsuario(item.documento)" title="Desactivar" class="btn btn-sm btn-danger">
+                                            <i v-if="item.estado == 1" class="fas fa-times-circle"></i>
                                         </button>
 
-                                        <button v-else @click="activarUsuario(item.documento)" title="Desactivar" class="btn btn-sm btn-success">
-                                            <i class="fas fa-check-square"></i>
+                                        <span v-if="item.estado == 0">Habilitar &nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                        <button v-if="item.estado == 0" @click="habilitarUsuario(item.documento)" title="Activar" class="btn btn-sm btn-success">
+                                           <i v-if="item.estado == 0" class="fas fa-check-square"></i>
                                         </button>
                                     </td>
                                     <td v-text="item.tipo_documento"></td>
                                     <td v-text="item.documento"></td>
-                                    <td>hoy :v</td>
                                     <td>
                                         <span v-if="item.estado == 1" class="badge badge-success">Habilitado</span>
                                         <span v-else class="badge badge-danger">Desabilitado</span>
@@ -177,9 +177,22 @@ var app = new Vue({
         docHab: '',
         textFilter: 'Filtro',
         vistaTabla: 0,
-        arrayUsuarios: []
+        arrayUsuarios: [],
+        arrayHabilitados: []
 	},
 	methods:{
+        getHabilitados(){
+            var me = this;
+            axios.get('/senov_v3/usuario/getHabilitados')
+            .then(function (response){
+                var res = response.data;
+                console.log(res);
+                me.arrayHabilitados = res.habilitados;
+            })
+            .catch(function (error) {
+				console.error(error);
+			});
+        },
 		getUsuarios(){
 			var me = this;
 			axios.get('/senov_v3/usuario/index')
@@ -206,7 +219,7 @@ var app = new Vue({
                 }).then((result) => {
                                        
                     $('#habilitarModal').modal('toggle');
-                    var url = '/senov_v3/usuario/habilitarUsuario';
+                    var url = '/senov_v3/usuario/habilitarUsuarios';
                     
                     axios.post(url,{
                         dni: me.docHab
@@ -279,6 +292,45 @@ var app = new Vue({
                 }
             }) 
         },
+
+        deshabilitarUsuario(id){
+            swal({
+                title: '¿Esta seguro de Deshabilitar el Usuario?',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Si, Deshabilitarlo!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.value) {
+                    let me = this;
+                    var url = '/senov_v3/usuario/deshabilitarUsuario';
+                    
+                    axios.put(url,{id : id})
+                    .then(function (response) {
+                        me.getHabilitados();
+                        swal(
+                            'Deshabilitado!',
+                            'El Usuario a sido Deshabilitado.',
+                            'success'
+                        )
+                        
+                    })
+                    .catch(function (error) {
+                        // Manejar el fallo
+                        swal(
+                            'Error!',
+                            'El Usuario NO a sido Deshabilitado.',
+                            'error'
+                        )
+                        console.error(error);
+                    });
+                    
+                }
+            }) 
+        },
+
         activarUsuario(id){
             swal({
                 title: '¿Esta seguro de Activar el Usuario?',
@@ -316,6 +368,45 @@ var app = new Vue({
                 }
             }) 
         },
+        
+        habilitarUsuario(id){
+            swal({
+                title: '¿Esta seguro de habilitar el Usuario?',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Si, habilitarlo!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.value) {
+                    let me = this;
+                    var url = '/senov_v3/usuario/habilitarUsuario';
+                    
+                    axios.put(url,{id : id})
+                    .then(function (response) {
+                        me.getHabilitados();
+                        swal(
+                            '¡Habilitado!',
+                            'El Usuario a sido Habilitado.',
+                            'success'
+                        )
+                        
+                    })
+                    .catch(function (error) {
+                        // Manejar el fallo
+                        swal(
+                            'Error!',
+                            'El Usuario NO a sido Habilitado.',
+                            'error'
+                        )
+                        console.error(error);
+                    });
+                    
+                }
+            }) 
+        },
+
         filtro(data){
             let me = this;
             if(data == 'no_registrados'){
@@ -327,7 +418,8 @@ var app = new Vue({
         }
 	},
 	mounted() {
-		this.getUsuarios();
+        this.getUsuarios();
+        this.getHabilitados();
 	},
 })
 </script>
